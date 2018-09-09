@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+*.suo
+.vs/Penthesilea/v15/Browse.VC.db
+
+# VS Build directories
+.vs/
+Debug/
+x64/
+Penthesilea/x64/
+
