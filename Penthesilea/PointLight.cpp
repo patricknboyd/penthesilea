@@ -13,7 +13,7 @@ PointLight::PointLight(Vector3 pos)
 
 Vector3 PointLight::GetLightDirection(TraceResult& trace)
 {
-	return (position - trace.LocalHitPoint).Normalize();
+	return Vector3::Normalize(position - trace.LocalHitPoint);
 }
 
 RGBColour PointLight::GetRadiance(TraceResult& result)
@@ -25,7 +25,7 @@ bool PointLight::IsInShadow(const Ray& ray, const TraceResult& trace) const
 {
 	Float t;
 	int nObjects = trace.WorldRef.GetWorldObjectCount();
-	Float lightDistance = position.Distance(ray.Origin);
+	Float lightDistance = Vector3::Distance(position, ray.Origin);
 
 	for (int i = 0; i < nObjects; i++)
 	{

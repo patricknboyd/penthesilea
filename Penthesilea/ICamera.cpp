@@ -18,7 +18,7 @@ ICamera::ICamera(Vector3 eyePosition, Vector3 lookAtPosition, Vector3 upVector)
 
 void ICamera::CalculateLocalCoordinateBase()
 {
-	w = (position - lookAt).Normalize();
-	u = Vector3::Cross(up, w).Normalize();
+	w = Vector3::Normalize(position - lookAt);
+	u = Vector3::Normalize(Vector3::Cross(up, w));
 	v = Vector3::Cross(w, u);
 }

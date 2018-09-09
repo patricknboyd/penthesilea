@@ -13,9 +13,9 @@ GlossySpecularReflectance::GlossySpecularReflectance(ISampler* sampler)
 
 RGBColour GlossySpecularReflectance::Calculate(const TraceResult & result, const Vector3 & incoming, const Vector3 outgoing) const
 {
-	Float incidenceDotProduct = result.Normal.Dot(incoming);
+	Float incidenceDotProduct = Vector3::Dot(result.Normal, incoming);
 	Vector3 reflected(-incoming + 2.0 * result.Normal * incidenceDotProduct);
-	Float outgoingDotProduct = reflected.Dot(outgoing);
+	Float outgoingDotProduct = Vector3::Dot(reflected, outgoing);
 
 	if (outgoingDotProduct > 0.0)
 	{

@@ -6,12 +6,14 @@ Sphere::Sphere()
 {
 	_center = Vector3();
 	_radius = 1.0;
+	_radiusSquared = 1.0;
 }
 
 Sphere::Sphere(const Vector3& center, Float radius)
 {
 	_center = center;
 	_radius = radius;
+	_radiusSquared = _radius * _radius;
 }
 
 bool Sphere::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
@@ -23,7 +25,7 @@ bool Sphere::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
 	// Calculate the variables for the quadratic equation
 	double a = Vector3::Dot(ray.Direction, ray.Direction);
 	double b = 2.0 * Vector3::Dot(fromCenter, ray.Direction);
-	double c = Vector3::Dot(fromCenter, fromCenter) - (_radius * _radius);
+	double c = Vector3::Dot(fromCenter, fromCenter) - (_radiusSquared);
 
 	// Calculate the discriminant.
 	double disc = b * b - (4.0 * a * c);
@@ -72,7 +74,7 @@ bool Sphere::HitShadowRay(const Ray& ray, Float& tMin) const
 	// Calculate the variables for the quadratic equation
 	double a = Vector3::Dot(ray.Direction, ray.Direction);
 	double b = 2.0 * Vector3::Dot(fromCenter, ray.Direction);
-	double c = Vector3::Dot(fromCenter, fromCenter) - (_radius * _radius);
+	double c = Vector3::Dot(fromCenter, fromCenter) - (_radiusSquared);
 
 	// Calculate the discriminant.
 	double disc = b * b - (4.0 * a * c);

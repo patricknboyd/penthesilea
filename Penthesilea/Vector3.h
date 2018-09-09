@@ -19,44 +19,63 @@ public:
 
 	Float Length() const;
 
-	static Float Dot(const Vector3& a, const Vector3& b);
-	Float Dot(const Vector3& other) const;
+	inline static Float Dot(const Vector3& a, const Vector3& b)
+	{
+		return (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z);
+	}
 
-	static Vector3 Cross(const Vector3& a, const Vector3& b);
-	Vector3 Cross(const Vector3& other)const ;
+	inline static Vector3 Cross(const Vector3& a, const Vector3& b)
+	{
+		return Vector3(
+			(a.Y * b.Z) - (a.Z * b.Y),
+			(a.Z * b.X) - (a.X * b.Z),
+			(a.X * b.Y) - (a.Y * b.X)
+		);
+	}
 
-	static Vector3 Normalize(const Vector3& vec);
-	Vector3 Normalize() const;
+	inline static Vector3 Normalize(const Vector3& vec)
+	{
+		Float magnitude = vec.Length();
 
-	static Float Distance(const Vector3& a, const Vector3& b);
-	Float Distance(const Vector3& other) const;
+		return Vector3(vec.X / magnitude, vec.Y / magnitude, vec.Z / magnitude);
+	}
 
-	Vector3 operator+ (const Vector3& other) const;
-	Vector3 operator- (const Vector3& other) const;
-	//Vector3 operator* (Float& factor) const;
-	//Vector3 operator/ (Float& denominator) const;
+	inline static Float Distance(const Vector3& a, const Vector3& b)
+	{
+		return (b - a).Length();
+	}
 
-	friend Vector3 operator* (const Float& lhs, Vector3 rhs)
+	inline Vector3 operator+ (const Vector3& other) const
+	{
+		return Vector3(X + other.X, Y + other.Y, Z + other.Z);
+	}
+
+	inline Vector3 operator- (const Vector3& other) const 
+	{
+		return Vector3(X - other.X, Y - other.Y, Z - other.Z);
+	}
+
+	inline friend Vector3 operator* (const Float& lhs, Vector3 rhs)
 	{
 		return Vector3(rhs.X * lhs, rhs.Y * lhs, rhs.Z * lhs);
 	}
 
-	friend Vector3 operator* (const Vector3 lhs, const Float& rhs)
+	inline friend Vector3 operator* (const Vector3 lhs, const Float& rhs)
 	{
 		return Vector3(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs);
 	}
 
-	friend Vector3 operator/ (const Vector3& lhs, const Float& rhs)
+	inline friend Vector3 operator/ (const Vector3& lhs, const Float& rhs)
 	{
 		return Vector3(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs);
 	}
 
-	friend Vector3 operator- (const Vector3& vec)
+	inline friend Vector3 operator- (const Vector3& vec)
 	{
 		return Vector3(-vec.X, -vec.Y, -vec.Z);
 	}
 
-	friend std::ostream& operator<< (std::ostream& stream, const Vector3& v)
+	inline friend std::ostream& operator<< (std::ostream& stream, const Vector3& v)
 	{
 		return stream << "(" << v.X << ", " << v.Y << ", " << v.Z << ")";
 	}

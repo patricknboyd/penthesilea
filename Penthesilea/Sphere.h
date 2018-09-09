@@ -14,6 +14,7 @@ private:
 
 	Vector3 _center;
 	Float _radius;
+	Float _radiusSquared;
 
 	static const Float kEpsilon;
 };

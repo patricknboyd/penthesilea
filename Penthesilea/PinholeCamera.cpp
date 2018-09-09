@@ -59,5 +59,5 @@ void PinholeCamera::RenderScene(const World& world)
 Vector3 PinholeCamera::GetRayDirection(const Point2D& p) const
 {
 	Vector3 direction = (p.X * u) + (p.Y * v) - (viewPlaneDistance * w);
-	return direction.Normalize();
+	return Vector3::Normalize(direction);
 }

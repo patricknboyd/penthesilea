@@ -21,15 +21,14 @@ LRESULT CALLBACK RenderWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			break;
 
 		case ID_FILE_SAVEIMAGE:
-
-			std::cout << "In Save Image WndProc handler." << std::endl;
-
+			
 			RenderWindow::Current->SaveRenderedImage();
 
 			break;
 
 		case ID_FILE_OPENSCENE:
-			std::cout << "In Open Scene WndProc handler." << std::endl;
+
+			RenderWindow::Current->LoadScene();
 
 			break;
 		default:
@@ -172,6 +171,15 @@ int RenderWindow::OpenWindow()
 
 	isWindowRunning = true;
 
+	// Initialize COM
+
+	HRESULT result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+	if (!SUCCEEDED(result))
+	{
+		return -1;
+	}
+
 	// Main message loop.
 	while (true)
 	{
@@ -185,26 +193,9 @@ int RenderWindow::OpenWindow()
 		{
 			break;
 		}
-		/*else if (msg.message == WM_PAINT)
-		{
-			PAINTSTRUCT ps;
-
-			HDC hdc = BeginPaint(windowHandle, &ps);
-			OnPaint(hdc);
-			EndPaint(windowHandle, &ps);
-		}*/
 
 		std::this_thread::yield();
 	}
-
-	//while (GetMessage(&msg, NULL, 0, 0))
-	//{
-	//	if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-	//	{
-	//		TranslateMessage(&msg);
-	//		DispatchMessage(&msg);
-	//	}
-	//}
 
 	isWindowRunning = false;
 	RenderWindow::Current = nullptr;
@@ -218,6 +209,9 @@ int RenderWindow::OpenWindow()
 	Gdiplus::GdiplusShutdown(gdiPlusToken);
 
 	KillTimer(windowHandle, IDT_TIMER1);
+
+	// Shut down COM
+	CoUninitialize();
 
 	return (int)msg.wParam;
 }
@@ -321,6 +315,20 @@ HMENU RenderWindow::LoadRenderWindowMenu()
 	return handle;
 }
 
+void RenderWindow::LoadScene()
+{
+	std::string inputPath;
+
+	if (GetOpenScenePath(inputPath))
+	{
+
+	}
+	else
+	{
+		std::cerr << "Unable to open scene." << std::endl;
+	}
+}
+
 void RenderWindow::SaveRenderedImage()
 {
 	std::string outputPath;
@@ -340,6 +348,10 @@ void RenderWindow::SaveRenderedImage()
 		{
 			std::cout << "Save complete." << std::endl;
 		}
+	}
+	else
+	{
+		std::cerr << "Unable to save image." << std::endl;
 	}
 }
 
@@ -392,13 +404,16 @@ std::vector<unsigned char> RenderWindow::GetPixelBytes()
 	return imageBytes;
 }
 
+bool RenderWindow::GetOpenScenePath(std::string& inputPath) const
+{
+	return false;
+}
+
 bool RenderWindow::GetSaveImagePath(std::string& outputPath) const
 {
 	bool proceedWithSave = false;
-	HRESULT result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
-	if (SUCCEEDED(result))
-	{
+	HRESULT result;
 		IFileSaveDialog* sfd = nullptr;
 		result = CoCreateInstance(CLSID_FileSaveDialog,
 			nullptr,
@@ -406,44 +421,48 @@ bool RenderWindow::GetSaveImagePath(std::string& outputPath) const
 			IID_IFileSaveDialog,
 			reinterpret_cast<void**>(&sfd));
 
+	if (SUCCEEDED(result))
+	{
+		COMDLG_FILTERSPEC saveTypesArray[] =
+		{
+			{ L"PNG", L"*.png" },
+		};
+
+		sfd->SetFileTypes(ARRAYSIZE(saveTypesArray), saveTypesArray);
+
+		result = sfd->Show(windowHandle);
+
 		if (SUCCEEDED(result))
 		{
-			result = sfd->Show(windowHandle);
+			IShellItem* sItem;
+			result = sfd->GetResult(&sItem);
 
 			if (SUCCEEDED(result))
 			{
-				IShellItem* sItem;
-				result = sfd->GetResult(&sItem);
+				PWSTR filePath;
+				result = sItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
 
 				if (SUCCEEDED(result))
 				{
-					PWSTR filePath;
-					result = sItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
+					std::wstringstream stream;
 
-					if (SUCCEEDED(result))
-					{
-						std::wstringstream stream;
+					stream << filePath;
 
-						stream << filePath;
+					outputPath = std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(stream.str());
 
-						outputPath = std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(stream.str());
+					//outputPath = std::wstring_convert <std::string>( stream.str());
+					proceedWithSave = true;
 
-						//outputPath = std::wstring_convert <std::string>( stream.str());
-						proceedWithSave = true;
-
-						CoTaskMemFree(filePath);
-					}
-
-					sItem->Release();
+					CoTaskMemFree(filePath);
 				}
 
+				sItem->Release();
 			}
-
-			sfd->Release();
 
 		}
 
-		CoUninitialize();
+		sfd->Release();
+
 	}
 
 	return proceedWithSave;
@@ -451,4 +470,5 @@ bool RenderWindow::GetSaveImagePath(std::string& outputPath) const
 
 RenderWindow::~RenderWindow()
 {
+	
 }

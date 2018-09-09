@@ -21,7 +21,7 @@ Quad::Quad(Vector3 cornerPoint, Vector3 sideOne, Vector3 sideTwo)
 
 bool Quad::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
 {
-	double t = (corner - ray.Origin).Dot(normal / ray.Direction.Dot(normal));
+	double t = Vector3::Dot(corner - ray.Origin, normal / Vector3::Dot(ray.Direction, normal));
 
 	if (t <= kEpsilon)
 	{
@@ -31,14 +31,14 @@ bool Quad::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
 	Vector3 p = ray.Origin + t * ray.Direction;
 	Vector3 d = p - corner;
 
-	double ddota = d.Dot(a);
+	double ddota = Vector3::Dot(d, a);
 
 	if (ddota < 0.0 || ddota > aLengthSquared)
 	{
 		return (false);
 	}
 
-	double ddotb = d.Dot(b);
+	double ddotb = Vector3::Dot(d, b);
 
 	if (ddotb < 0.0 || ddotb > bLengthSquared)
 	{

@@ -49,14 +49,14 @@ public:
 	/// Sets the direction of the light from this source. The direction vector will be normalized.
 	/// </summary>
 	/// <param name="value">The vector direction, this will be normalized.</param>
-	void SetDirection(Vector3 value) { direction = value.Normalize(); }
+	void SetDirection(Vector3 value) { direction = Vector3::Normalize(value); }
 	/// <summary>
 	/// Sets the direction of the light from this source. The direction vector will be normalized.
 	/// </summary>
 	/// <param name="x">The x component of the light direction.</param>
 	/// <param name="y">The y component of the light direction.</param>
 	/// <param name="z">The z component of the light direction.</param>
-	void SetDirection(Float x, Float y, Float z) { direction = Vector3(x, y, z).Normalize(); }
+	void SetDirection(Float x, Float y, Float z) { direction = Vector3::Normalize(Vector3(x, y, z)); }
 
 	virtual Vector3 GetLightDirection(TraceResult& trace);
 	virtual RGBColour GetRadiance(TraceResult& trace);

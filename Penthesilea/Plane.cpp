@@ -11,12 +11,12 @@ Plane::Plane()
 Plane::Plane(const Vector3& point, const Vector3& normal)
 {
 	_point = point;
-	_normal = normal.Normalize();
+	_normal = Vector3::Normalize(normal);
 }
 
 bool Plane::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
 {
-	Float t = (_point - ray.Origin).Dot(_normal) / ray.Direction.Dot( _normal);
+	Float t = Vector3::Dot(_point - ray.Origin, _normal) / Vector3::Dot(ray.Direction,  _normal);
 
 	if (t > kEpsilon)
 	{
@@ -34,7 +34,7 @@ bool Plane::Hit(const Ray& ray, Float& tMin, TraceResult& result) const
 
 bool Plane::HitShadowRay(const Ray& ray, Float& tMin) const
 {
-	Float t = (_point - ray.Origin).Dot(_normal) / ray.Direction.Dot(_normal);
+	Float t = Vector3::Dot(_point - ray.Origin, _normal) / Vector3::Dot(ray.Direction, _normal);
 
 	if (t > kEpsilon)
 	{

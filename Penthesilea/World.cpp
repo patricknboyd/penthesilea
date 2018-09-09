@@ -113,9 +113,10 @@ void World::RayTraceScene() const
 	auto start = std::chrono::high_resolution_clock::now();
 
 
+	std::cout << std::endl << "-------------------------------------------" << std::endl;
+	std::cout << "Rendering " << this->GetWorldObjectCount() << " objects and " << this->GetLightCount() << " lights." << std::endl;
+	std::cout << "Render resolution: " << View.GetHorizontalResolution() << "x" << View.GetVerticalResolution() << "." << std::endl << std::endl;
 	std::cout << "Beginning render..." << std::endl;
-	std::cout << "Rendring " << this->GetWorldObjectCount() << " objects and " << this->GetLightCount() << " lights." << std::endl;
-	std::cout << "Render resolution: " << View.GetHorizontalResolution() << "x" << View.GetVerticalResolution() << "." << std::endl;
 	
 
 	camera->RenderScene(*this);
@@ -128,7 +129,6 @@ void World::RayTraceScene() const
 	Float averageRunTime = (Float)(runTimeMilliseconds.count()) / (View.GetHorizontalResolution() * View.GetVerticalResolution());
 
 
-	std::cout << std::endl << "-------------------------------------------" << std::endl;
 	std::cout << "Render Complete!" << std::endl;
 	std::cout << "Total runtime: " << (Float)runTimeMilliseconds.count() / 1000.0 << " seconds." << std::endl;
 	std::cout << "Average time per pixel: " << averageRunTime << " milliseconds.";

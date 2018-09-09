@@ -26,6 +26,7 @@ public:
 
 	void EnableRedraw();
 	void SaveRenderedImage();
+	void LoadScene();
 
 	bool IsWindowRunning() const { return isWindowRunning; }
 
@@ -51,6 +52,7 @@ private:
 	HMENU LoadRenderWindowMenu();
 
 	bool GetSaveImagePath(std::string& outputPath) const;
+	bool GetOpenScenePath(std::string& inputPath) const;
 	std::vector<unsigned char> GetPixelBytes();
 
 	// The current instance

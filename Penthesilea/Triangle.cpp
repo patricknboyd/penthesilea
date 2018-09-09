@@ -62,5 +62,5 @@ bool Triangle::HitShadowRay(const Ray& shadowRay, Float& tMin) const
 
 void Triangle::CalculateNormal()
 {
-	normal = (v2 - v0).Cross(v1 - v0);
+	normal = Vector3::Cross(v2 - v0, v1 - v0);
 }
